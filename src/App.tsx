@@ -25,14 +25,16 @@ const MarkdownComponents: Record<
   breakpoint: () => <br />,
 };
 
-const TagComponents: Record<
-  Tag["type"],
-  (props: { children: ReactNode }) => ReactElement
-> = {
-  bold: ({ children }) => <strong>{children}</strong>,
-  italic: ({ children }) => <em>{children}</em>,
-  normal: ({ children }) => <>{children}</>,
-};
+function mapTagComponents(
+  tag: Tag
+): (props: { children: ReactNode } ) => ReactElement {
+  switch(tag.type) {
+    case "bold": return ({ children }) => <strong>{children}</strong>;
+    case "italic": return ({ children }) => <em>{children}</em>;
+    case "link": return ({ children }) => <a href={tag.attributes}>{children}</a>;
+    case "normal": return ({ children }) => <>{children}</>
+  }
+}
 
 const DefaultComponent: MarkdownComponentType = ({ children }) => (
   <div>{children}</div>
@@ -74,7 +76,7 @@ export function App() {
                 return (
                   <Component key={markdownElement.id}>
                     {markdownElement.tags.map((tag) => {
-                      const TagComponent = TagComponents[tag.type];
+                      const TagComponent = mapTagComponents(tag);
 
                       return (
                         <TagComponent key={tag.id}>{tag.content}</TagComponent>

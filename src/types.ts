@@ -4,8 +4,9 @@ export type GetTypesStartingWithPrefix<
 > = Type extends `${Prefix}${infer _}` ? Type : never;
 
 export type Tag = {
-  type: "normal" | "bold" | "italic";
+  type: "normal" | "bold" | "italic" | "link";
   content: string;
+  attributes?: string;
   id: string;
 };
 
